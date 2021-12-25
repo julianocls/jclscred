@@ -12,11 +12,17 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("clientes")
+@RequestMapping("/clientes")
 public class ClienteResource {
 
     @Autowired
     private ClienteService service;
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Cliente> find(@PathVariable Long id) {
+        Cliente cliente = service.find(id);
+        return ResponseEntity.ok().body(cliente);
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objNewDTO) {

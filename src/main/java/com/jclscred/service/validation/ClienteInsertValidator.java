@@ -38,12 +38,6 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
             context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName()).addConstraintViolation();
         });
 
-//        for (FieldMessage e : list) {
-//            context.disableDefaultConstraintViolation();
-//            context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName())
-//                    .addConstraintViolation();
-//        }
-
         return list.isEmpty();
     }
 }

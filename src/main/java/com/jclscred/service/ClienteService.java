@@ -1,11 +1,9 @@
 package com.jclscred.service;
 
 import com.jclscred.domain.Cliente;
-import com.jclscred.domain.Endereco;
 import com.jclscred.dto.ClienteDTO;
 import com.jclscred.dto.ClienteNewDTO;
 import com.jclscred.repository.ClienteRepository;
-import com.jclscred.repository.EnderecoRepository;
 import com.jclscred.service.exception.DataIntegrityException;
 import com.jclscred.service.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,55 +21,53 @@ import java.util.Optional;
 public class ClienteService {
 
 	@Autowired
-	ClienteRepository repository;
-	@Autowired
-	EnderecoRepository enderecoRepository;
+	ClienteRepository clienteRepository;
 
-	public Cliente find(Long id) {
-		Optional<Cliente> cliente = repository.findById(id);
+	public Cliente findById(Long id) {
+		Optional<Cliente> cliente = clienteRepository.findById(id);
 		return cliente.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado. Id: " + id + ", tipo: " + Cliente.class.getName()));
 	}
 
 	@Transactional
 	public Cliente insert(Cliente obj) {
 		obj.setId(null);
-		obj = repository.save(obj);
-		enderecoRepository.saveAll(obj.getEnderecos());
+		obj = clienteRepository.save(obj);
 		return obj;
 	}
 
 	public Cliente update(Cliente obj) {
-		Cliente objOld = find(obj.getId());
+		Cliente objOld = findById(obj.getId());
 		updateData(obj, objOld);	
-		return repository.save(obj);
+		return clienteRepository.save(obj);
 	}
 
 	public void delete(Long id) {
-		find(id);
+		findById(id);
 		try {
-			repository.deleteById(id);
+			clienteRepository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Exclusão não permitida! Este cliente possui relacionamento com outras tabelas.");
+			throw new DataIntegrityException("Exclusão não permitida! Este cliente possui empréstimos contratados.");
 		}
 	}
 
 	public List<Cliente> findAll() {
-		return repository.findAll();
+		return clienteRepository.findAll();
 	}
 
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		return repository.findAll(pageRequest);
+		return clienteRepository.findAll(pageRequest);
 	}
 
 	public Cliente fromDto(ClienteDTO objDTO) {
-		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), objDTO.getCpf(), objDTO. getRg(), objDTO.getRenda(), objDTO.getSenha());
+		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), objDTO.getCpf(), objDTO. getRg(),
+				objDTO.getRenda(), objDTO.getSenha(), objDTO.getLogradouro(), objDTO.getNumero(), objDTO.getComplemento(),
+				objDTO.getBairro(), objDTO.getCep());
 	}
 
 	public Cliente fromDto(ClienteNewDTO objNewDTO) {
-		Cliente cliente = new Cliente(null, objNewDTO.getNome(), objNewDTO.getEmail(), objNewDTO.getCpf(), objNewDTO.getRg(), objNewDTO.getRenda(), objNewDTO.getSenha());
-		Endereco endereco = new Endereco(null, objNewDTO.getLogradouro(), objNewDTO.getNumero(), objNewDTO.getComplemento(), objNewDTO.getBairro(), objNewDTO.getCep(), cliente);
-		cliente.getEnderecos().add(endereco);
+		Cliente cliente = new Cliente(null, objNewDTO.getNome(), objNewDTO.getEmail(), objNewDTO.getCpf(), objNewDTO.getRg(), objNewDTO.getRenda(), objNewDTO.getSenha(),
+				                       objNewDTO.getLogradouro(), objNewDTO.getNumero(), objNewDTO.getComplemento(), objNewDTO.getBairro(), objNewDTO.getCep());
 		return cliente;
 	}
 	

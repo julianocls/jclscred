@@ -1,10 +1,13 @@
 package com.jclscred.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -28,26 +31,44 @@ public class Cliente implements Serializable {
 	@Column(unique = true, length = 60)
 	private String email;
 
-	@Column(length = 14)
+	@Column(length = 11)
 	private String cpf;
 
 	@Column(length = 20)
 	private String rg;
 
-	@Column(length = 13, precision = 2)
+	@Column(precision = 13, scale = 2)
 	private BigDecimal renda;
 
 	@JsonIgnore
 	@NotEmpty(message = "O senha não pode ser vazio!")
 	private String senha;
 
-	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
-	private List<Endereco> enderecos = new ArrayList<>();
+	// Endereço
+	@NotEmpty(message = "O Logradouro não pode ser vazio!")
+	@Column(length = 60)
+	private String logradouro;
+
+	@NotEmpty(message = "O Numero não pode ser vazio!")
+	@Column(length = 15)
+	private String numero;
+
+	@Column(length = 120)
+	private String complemento;
+
+	@NotEmpty(message = "O Bairro não pode ser vazio!")
+	@Column(length = 60)
+	private String bairro;
+
+	@NotEmpty(message = "O CEP não pode ser vazio!")
+	@Column(length = 10)
+	private String cep;
 
 	public Cliente() {
 	}
 
-	public Cliente(Long id, String nome, String email, String cpf, String rg, BigDecimal renda, String senha) {
+	public Cliente(Long id, String nome, String email, String cpf, String rg, BigDecimal renda, String senha,
+				   String logradouro, String numero, String complemento, String bairro, String cep) {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
@@ -55,6 +76,11 @@ public class Cliente implements Serializable {
 		this.rg = rg;
 		this.renda = renda;
 		this.senha = senha;
+		this.logradouro = logradouro;
+		this.numero = numero;
+		this.complemento = complemento;
+		this.bairro = bairro;
+		this.cep = cep;
 	}
 
 	@Override

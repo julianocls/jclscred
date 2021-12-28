@@ -6,9 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -31,29 +30,52 @@ public class ClienteDTO implements Serializable {
 	private String email;
 
 	@NotEmpty(message = "Preenchimento obrigatório!")
-	@Length(min = 14, max = 14, message = "O tamanho deve ser 14 caracteres!")
+	@Length(min = 11, max = 11, message = "O tamanho deve ser 11 caracteres!")
 	private String cpf;
 
 	@NotEmpty(message = "Preenchimento obrigatório!")
 	@Length(min = 13, max = 20, message = "O tamanho deve estar entre 13 e 20 caracteres!")
 	private String rg;
 
+	@Digits(integer=13, fraction=2, message = "Digite no máximo 13 dígitos com 2 casas decimais!")
+	@DecimalMin(value = "0.0", inclusive = false, message = "A renda deve ser uma valor válido!")
 	@NotNull(message = "Preenchimento obrigatório!")
 	private BigDecimal renda;
 
 	@NotEmpty(message = "O senha não pode ser vazio!")
 	private String senha;
 
+	// Endereço
+	@NotEmpty(message = "O Logradouro não pode ser vazio!")
+	private String logradouro;
+
+	@NotEmpty(message = "O Numero não pode ser vazio!")
+	private String numero;
+
+	private String complemento;
+
+	@NotEmpty(message = "O Bairro não pode ser vazio!")
+	private String bairro;
+
+	@NotEmpty(message = "O CEP não pode ser vazio!")
+	private String cep;
+
 	public ClienteDTO() {
 	}
 
-	public ClienteDTO(Long id, String nome, String email, String cpf, String rg, BigDecimal renda, String senha) {
-		this.id = id;
-		this.nome = nome;
-		this.email = email;
-		this.cpf = cpf;
-		this.rg = rg;
-		this.renda = renda;
-		this.senha = senha;
+	public ClienteDTO(Cliente cliente) {
+		this.id = cliente.getId();
+		this.nome = cliente.getNome();
+		this.email = cliente.getEmail();
+		this.cpf = cliente.getCpf();
+		this.rg = cliente.getRg();
+		this.renda = cliente.getRenda();
+		this.senha = cliente.getSenha();
+		this.logradouro = cliente.getLogradouro();
+		this.numero = cliente.getNumero();
+		this.complemento = cliente.getComplemento();
+		this.bairro = cliente.getBairro();
+		this.cep = cliente.getCep();
 	}
+
 }

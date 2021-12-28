@@ -44,10 +44,6 @@ public class ClienteUpdateValidator implements ConstraintValidator<ClienteUpdate
 				context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName()).addConstraintViolation();
 		});
 
-//		for (FieldMessage e : list) {
-//			context.disableDefaultConstraintViolation();
-//			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName()).addConstraintViolation();
-//		}
 		return list.isEmpty();
 	}
 }

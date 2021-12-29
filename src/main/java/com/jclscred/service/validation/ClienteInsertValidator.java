@@ -2,7 +2,7 @@ package com.jclscred.service.validation;
 
 import com.jclscred.dto.ClienteNewDTO;
 import com.jclscred.repository.ClienteRepository;
-import com.jclscred.resource.FieldMessage;
+import com.jclscred.resource.ValidationMessage;
 import com.jclscred.util.BR;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,14 +22,14 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 
     @Override
     public boolean isValid(ClienteNewDTO objDto, ConstraintValidatorContext context) {
-        List<FieldMessage> list = new ArrayList<>();
+        List<ValidationMessage> list = new ArrayList<>();
 
         if(BR.isValidCPF(objDto.getCpf())) {
-            list.add(new FieldMessage("cpf", "CPF inválido!"));
+            list.add(new ValidationMessage("cpf", "CPF inválido!"));
         }
 
         if(clienteRepository.findByEmail(objDto.getEmail()) != null) {
-            list.add(new FieldMessage("email", "E-Mail já cadastrado!"));
+            list.add(new ValidationMessage("email", "E-Mail já cadastrado!"));
         }
 
         // Inserindo erros de validacao na lista

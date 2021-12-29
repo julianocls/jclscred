@@ -4,7 +4,7 @@ import com.jclscred.domain.Cliente;
 import com.jclscred.dto.ClienteDTO;
 import com.jclscred.repository.ClienteRepository;
 
-import com.jclscred.resource.FieldMessage;
+import com.jclscred.resource.ValidationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -29,13 +29,13 @@ public class ClienteUpdateValidator implements ConstraintValidator<ClienteUpdate
 
 	@Override
 	public boolean isValid(ClienteDTO objDto, ConstraintValidatorContext context) {
-		List<FieldMessage> list = new ArrayList<>();
+		List<ValidationMessage> list = new ArrayList<>();
 
 		Map<String, String> map = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-		Integer urlId = Integer.parseInt(map.get("id"));
+		Long urlId = Long.parseLong(map.get("id"));
 		Cliente cliente = clienteRepository.findByEmail(objDto.getEmail());
 		if (cliente != null && !cliente.getId().equals(urlId)) {
-			list.add(new FieldMessage("email", "E-Mail já cadastrado para o cliente [" + cliente.getNome() + "]!"));
+			list.add(new ValidationMessage("email", "E-Mail já cadastrado para o cliente [" + cliente.getNome() + "]!"));
 		}
 
 		// Inserindo erros de validacao na lista

@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -31,12 +32,20 @@ public class ClienteService {
 	@Transactional
 	public Cliente insert(Cliente obj) {
 		obj.setId(null);
+
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		obj.setSenha(passwordEncoder.encode(obj.getSenha()));
+
 		obj = clienteRepository.save(obj);
 		return obj;
 	}
 
 	public Cliente update(Cliente obj) {
 		Cliente objOld = findById(obj.getId());
+
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		obj.setSenha(passwordEncoder.encode(obj.getSenha()));
+
 		updateData(obj, objOld);	
 		return clienteRepository.save(obj);
 	}
